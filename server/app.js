@@ -11,6 +11,11 @@ const connectDatabase = require('./config/database');
 connectDatabase();
 
 
+// setup body parser
+app.use(express.json());
+
+
+
 // creating own middleware
 const middleware = (req, res, next) => {
     console.log('Hello Middleware');

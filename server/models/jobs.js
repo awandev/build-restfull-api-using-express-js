@@ -76,7 +76,7 @@ const jobScheme = new mongoose.Schema({
             values : [
                 'No Experience',
                 '1 Year - 2 Years',
-                '2 Years - 5 Years',
+                '2 Year - 5 Years',
                 '5 Years+'
             ],
             message : 'Please select correct options for experience'
