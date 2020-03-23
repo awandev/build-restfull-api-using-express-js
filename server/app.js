@@ -5,7 +5,8 @@ const dotenv = require('dotenv')
 
 
 const connectDatabase = require('./config/database');
-const errorMiddleware = require('./middlewares/errors')
+const errorMiddleware = require('./middlewares/errors');
+const ErrorHandler = require('./utils/errorHandler');
 
 // setting up config.env file variables
 dotenv.config({path: './config/config.env'})
@@ -30,16 +31,22 @@ const middleware = (req, res, next) => {
     next();
 }
 
-app.use(errorMiddleware);
 
 
 
 // importing all routes
 const jobs = require('./routes/jobs')
+
+
+
 app.use('/api/v1', jobs);
 
+app.all('*', (req, res, next) => {
+    next(new ErrorHandler(`${req.originalUrl} route not found`, 404));
+});
+ 
 // middleware to handle errors
-
+app.use(errorMiddleware);
 
 
 const PORT = process.env.PORT;
@@ -55,5 +62,3 @@ process.on('unhandledRejection', err => {
     })
 });
 
-
-console.log(fasdf);
