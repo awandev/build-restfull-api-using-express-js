@@ -27,11 +27,29 @@ exports.newJob = async(req, res, next) => {
 }
 
 
+// get a single job with id and slug => /api/vi/job/:id/:slug
+exports.getJob = async(req,res,next) => {
+    const job = await Job.find({$and: [{_id: req.params.id}, {slug:req.params.slug}]});
+    if(!job || job.length === 0) {
+        return res.status(404).json({
+            success: false,
+            message: 'Job not found'
+        });
+    }
+    res.status(200).json({
+        success: true,
+        data: job
+    })
+}
+
+
+
 // update a job => /api/v1/job/:id
 exports.updateJob = async (req, res, next) => {
     let job = await Job.findById(req.params.id);
     
-    console.log(req);
+    console.log(`idnya adalah ${req.params.id}`);
+    
     if(!job) {
         return res.status(404).json({
             success: true,
@@ -52,6 +70,23 @@ exports.updateJob = async (req, res, next) => {
 
 
 }
+
+
+// exports.updateJobsById = async(req, res, next) => {
+    
+//     Exercise.findById(req.params.id)
+//         .then(exercise => {
+//             exercise.username = req.body.username;
+//             exercise.description = req.body.description;
+//             exercise.duration = Number(req.body.duration);
+//             exercise.date = Date.parse(req.body.date);
+//             exercise.save()
+//                 .then(() => res.json('Exercise Updated!'))
+//                 .catch(err => res.status(400).json('Error : ' + err));
+//         })
+//         .catch( err => res.status(400).json('Error : ' + err));
+    
+// }
 
 
 // delete a job => /api/v1/job:id
