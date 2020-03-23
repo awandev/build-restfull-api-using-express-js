@@ -10,6 +10,13 @@ const errorMiddleware = require('./middlewares/errors')
 // setting up config.env file variables
 dotenv.config({path: './config/config.env'})
 
+// handling uncaught exception
+process.on('uncaughtException', err => {
+    console.log(`Error: ${err.message}`);
+    console.log('Shutting down due to uncaught exception');
+    process.exit(1);
+})
+
 // connecting to database
 connectDatabase();
 // setup body parser
@@ -47,3 +54,6 @@ process.on('unhandledRejection', err => {
         process.exit(1);
     })
 });
+
+
+console.log(fasdf);
