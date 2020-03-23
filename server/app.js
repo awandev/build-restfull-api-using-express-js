@@ -4,13 +4,14 @@ const dotenv = require('dotenv')
 
 
 
+const connectDatabase = require('./config/database');
+const errorMiddleware = require('./middlewares/errors')
+
 // setting up config.env file variables
 dotenv.config({path: './config/config.env'})
-const connectDatabase = require('./config/database');
+
 // connecting to database
 connectDatabase();
-
-
 // setup body parser
 app.use(express.json());
 
@@ -22,13 +23,15 @@ const middleware = (req, res, next) => {
     next();
 }
 
-app.use(middleware);
+app.use(errorMiddleware);
 
 
 
 // importing all routes
 const jobs = require('./routes/jobs')
 app.use('/api/v1', jobs);
+
+// middleware to handle errors
 
 
 
