@@ -8,7 +8,7 @@ class APIFilters {
         const queryCopy = {...this.queryStr};
 
         // removing fields from the query
-        const removeFields = ['sort','fields','q'];             
+        const removeFields = ['sort','fields','q','limit','page'];             
         removeFields.forEach(el => delete queryCopy[el]);
 
         console.log(queryCopy);
@@ -59,6 +59,16 @@ class APIFilters {
         }
         return this;
     } 
+
+
+    pagination() {
+        const page = parseInt(this.queryStr.page, 10) || 1;
+        const limit = parseInt(this.queryStr.limit, 10) || 10;
+        const skipResults = (page - 1) * limit;
+
+        this.query = this.query.skip(skipResults).limit(limit);
+        return this;
+    }
 }
 
 module.exports = APIFilters;
