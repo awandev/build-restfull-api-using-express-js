@@ -2,17 +2,20 @@ const Job = require('../models/jobs')
 const geoCoder = require('../utils/geocoder')
 const ErrorHandler = require('../utils/errorHandler')
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors')
-// get all jobs => /api/v1/jobs
-exports.getJobs = async(req, res, next) => {
+const APIFilters = require('../utils/apiFilters');
 
-    const jobs = await Job.find();
+// get all jobs => /api/v1/jobs
+exports.getJobs = catchAsyncErrors(async(req, res, next) => {
+
+    const apiFilters = new APIFilters(Job.find(), req.query).filter();
+    const jobs = await apiFilters.query;
 
     res.status(200).json({
         success: true,
         results: jobs.length,
         data : jobs
     });
-} 
+}); 
 
 
 // create a new job => /api/v1/job/new
