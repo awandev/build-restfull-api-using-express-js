@@ -8,7 +8,7 @@ class APIFilters {
         const queryCopy = {...this.queryStr};
 
         // removing fields from the query
-        const removeFields = ['sort','fields'];
+        const removeFields = ['sort','fields','q'];             
         removeFields.forEach(el => delete queryCopy[el]);
 
         console.log(queryCopy);
@@ -48,6 +48,17 @@ class APIFilters {
         }
         return this;
     }
+    
+
+    searchByQuery() {
+        if(this.queryStr.q) {
+            const qu = this.queryStr.q.split('-').join(' ');
+            this.query = this.query.find({$text: {$search: "\"" + qu + "\""}});
+            
+            console.log(this.query);
+        }
+        return this;
+    } 
 }
 
 module.exports = APIFilters;
