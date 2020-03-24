@@ -16,6 +16,7 @@ module.exports = (err, req, res, next) => {
 
 
     if(process.env.NODE_ENV === 'production') {
+        
         let error = {...err};
         error.message = err.message;
 
@@ -24,6 +25,19 @@ module.exports = (err, req, res, next) => {
             const message = `Resource not found. Invalid : ${err.path}`;
             error = new ErrorHandler(message, 404);
         }
+
+        if(err.name === 'ValidationError') {
+            const message = Object.values(err.errors).map(value => value.message);
+            error = new ErrorHandler(message,400);
+        }
+
+        if(err.code === 11000) {
+            const message = `Duplicate ${Object.keys(err.keyValue)} entered`;
+            error = new ErrorHandler(message, 400);
+        }
+
+
+        
 
         res.status(err.statusCode).json({
             success : false,
