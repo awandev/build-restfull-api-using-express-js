@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express();
 const dotenv = require('dotenv')
-
+const cookieParser = require('cookie-parser');
 
 
 const connectDatabase = require('./config/database');
@@ -23,6 +23,8 @@ connectDatabase();
 // setup body parser
 app.use(express.json());
 
+// set cookie parser
+app.use(cookieParser());
 
 
 // creating own middleware
@@ -32,7 +34,7 @@ const middleware = (req, res, next) => {
 }
 
 
-
+ 
 
 // importing all routes
 const jobs = require('./routes/jobs')
