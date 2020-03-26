@@ -114,6 +114,12 @@ const jobScheme = new mongoose.Schema({
     applicantsApplied : {
         type : [Object],
         select : false
+    },
+    // tambahkan user
+    user : {
+        type : mongoose.Schema.ObjectId,
+        ref : 'User',
+        required : true
     }
 });
 
