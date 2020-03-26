@@ -14,6 +14,7 @@ const {
 
 const { isAuthenticatedUser,authorizeRoles } = require('../middlewares/auth')
 
+
 router.route('/jobs').get(getJobs);
 router.route('/job/:id/:slug').get(getJob);
 router.route('/jobs/:zipcode/:distance').get(getJobsInRadius);

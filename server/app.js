@@ -11,6 +11,7 @@ const ErrorHandler = require('./utils/errorHandler');
 // setting up config.env file variables
 dotenv.config({path: './config/config.env'})
 
+
 // handling uncaught exception
 process.on('uncaughtException', err => {
     console.log(`Error: ${err.message}`);
