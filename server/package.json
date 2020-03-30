@@ -6,8 +6,10 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app",
-    "prod": "NODE_ENV=production & nodemon app.js"
+    "prod": "set NODE_ENV=production & nodemon app.js"
   },
+
+  
   "author": "awandev",
   "license": "ISC",
   "dependencies": {
