@@ -3,8 +3,9 @@ const app = express();
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv')
 const cookieParser = require('cookie-parser')
-// connect to database 
+const fileUpload = require('express-fileupload')
 
+// connect to database 
 const connectDatabase = require('./config/database');
 const errorMiddleware = require('./middlewares/errors');
 const ErrorHandler = require('./utils/errorHandler')
@@ -28,7 +29,8 @@ app.use(express.json());
 // set cookie parser
 app.use(cookieParser());
 
-
+// handle file uploads
+app.use(fileUpload())
 
 // creating own middleware
 const middleware = (req, res, next) => {
