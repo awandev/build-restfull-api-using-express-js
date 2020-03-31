@@ -134,7 +134,8 @@ exports.jobStats =catchAsyncErrors( async(req, res, next) =>{
 
 // apply to job using resume => /api/v1/job/:id/apply 
 exports.applyJob = catchAsyncErrors(async(req, res, next) => {
-    let job = await Job.findById(req.params.id);
+    
+    let job = await Job.findById(req.params.id).select('+applicantsApplied');
     if(!job) {
         return next(new ErrorHandler('Job Not Found', 404));
     }
@@ -143,6 +144,15 @@ exports.applyJob = catchAsyncErrors(async(req, res, next) => {
     if(job.lastDate < new Date(Date.now())) {
         return next(new ErrorHandler('You can not apply to this job. Date is Over', 400));
     }
+
+
+    // Check if user has applied before
+    for (let i = 0; i < job.applicantsApplied.length; i++) {
+        if (job.applicantsApplied[i].id === req.user.id) {
+            return next(new ErrorHandler('You have already applied for this job.', 400))
+        }
+    }
+
 
     // check the files
     if(!req.files) {
