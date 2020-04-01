@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv')
 const cookieParser = require('cookie-parser')
 const fileUpload = require('express-fileupload')
+const rateLimit = require('express-rate-limit')
+
 
 // connect to database 
 const connectDatabase = require('./config/database');
@@ -31,6 +33,13 @@ app.use(cookieParser());
 
 // handle file uploads
 app.use(fileUpload())
+
+// rate limiting 
+const limiter = rateLimit({
+    windosMs : 10*60*1000, //10 minutes
+    max : 2 , //it means, you only have 2 request maximum on 10 minutes
+})
+app.use(limiter);
 
 // creating own middleware
 const middleware = (req, res, next) => {
