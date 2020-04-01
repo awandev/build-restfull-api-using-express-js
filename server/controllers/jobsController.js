@@ -132,19 +132,18 @@ exports.jobStats =catchAsyncErrors( async(req, res, next) =>{
     });
 });
 
-// apply to job using resume => /api/v1/job/:id/apply 
-exports.applyJob = catchAsyncErrors(async(req, res, next) => {
-    
+// Apply to job using Resume  =>  /api/v1/job/:id/apply
+exports.applyJob = catchAsyncErrors(async (req, res, next) => {
     let job = await Job.findById(req.params.id).select('+applicantsApplied');
-    if(!job) {
-        return next(new ErrorHandler('Job Not Found', 404));
+
+    if (!job) {
+        return next(new ErrorHandler('Job not found.', 404));
     }
 
-    // check that if job last date has been passed or not
-    if(job.lastDate < new Date(Date.now())) {
-        return next(new ErrorHandler('You can not apply to this job. Date is Over', 400));
+    // Check that if job last date has been passed or not
+    if (job.lastDate < new Date(Date.now())) {
+        return next(new ErrorHandler('You can not apply to this job. Date is over.', 400));
     }
-
 
     // Check if user has applied before
     for (let i = 0; i < job.applicantsApplied.length; i++) {
@@ -153,51 +152,51 @@ exports.applyJob = catchAsyncErrors(async(req, res, next) => {
         }
     }
 
-
-    // check the files
-    if(!req.files) {
-        return next(new ErrorHandler('Please upload file', 400));
+    // Check the files
+    if (!req.files) {
+        return next(new ErrorHandler('Please upload file.', 400));
     }
 
     const file = req.files.file;
 
-    // check file type
-    const supportedFiles = /.docs|.pdf/;
-    if(!supportedFiles.test(path.extname(file.name))) {
-        return next(new ErrorHandler('Please upload document file', 400))
+    // Check file type
+    const supportedFiles = /.docx|.pdf/;
+    if (!supportedFiles.test(path.extname(file.name))) {
+        return next(new ErrorHandler('Please upload document file.', 400))
     }
 
-    // check document size
-    if(file.size > process.env.MAX_FILE_SIZE) {
-        return next(new ErrorHandler('Please upload file less than 2MB', 400));
+    // Check doucument size
+    if (file.size > process.env.MAX_FILE_SIZE) {
+        return next(new ErrorHandler('Please upload file less than 2MB.', 400));
     }
 
-    // renaming resume
+    // Renaming resume
     file.name = `${req.user.name.replace(' ', '_')}_${job._id}${path.parse(file.name).ext}`;
 
     file.mv(`${process.env.UPLOAD_PATH}/${file.name}`, async err => {
-        if(err) {
+        if (err) {
             console.log(err);
-            return next(new ErrorHandler('Resume upload failed', 500));
+            return next(new ErrorHandler('Resume upload failed.', 500));
         }
 
-        await Job.findByIdAndUpdate(req.params.id, {$push : {
-            applicantsApplied : {
-                id : req.user.id,
-                resume : file.name
+        await Job.findByIdAndUpdate(req.params.id, {
+            $push: {
+                applicantsApplied: {
+                    id: req.user.id,
+                    resume: file.name
+                }
             }
-        }}, {
-            new : true,
-            runValidators : true,
-            useFindAndModify : false
+        }, {
+            new: true,
+            runValidators: true,
+            useFindAndModify: false
         });
 
         res.status(200).json({
-            success : true,
-            message : 'Applicant to job successfully',
-            data : file.name
+            success: true,
+            message: 'Applied to Job successfully.',
+            data: file.name
         })
+
     });
-
-
-})
+});
