@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser')
 const fileUpload = require('express-fileupload')
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
+const mongoSanitize = require('express-mongo-sanitize')
+const xssClean = require('xss-clean')
 
 // connect to database 
 const connectDatabase = require('./config/database');
@@ -25,6 +27,9 @@ process.on('uncaughtException', err => {
 // connecting to database
 connectDatabase();
 
+// setup security helmet
+app.use(helmet())
+
 // setup bodyparser
 app.use(express.json());
 
@@ -34,9 +39,12 @@ app.use(cookieParser());
 // handle file uploads
 app.use(fileUpload())
 
-// setup security helmet
-app.use(helmet())
+// sanitize data
+app.use(mongoSanitize());
 
+
+// prevent xss attack
+app.use(xssClean())
 
 // rate limiting 
 const limiter = rateLimit({
