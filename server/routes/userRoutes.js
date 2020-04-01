@@ -6,6 +6,7 @@ const {
     updatePassword,
     updateUser,
     deleteUser,
+    deleteUserAdmin,
     getAppliedJobs,
     getPublishedJobs,
     getUsers
@@ -13,14 +14,19 @@ const {
 
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth')
 
-router.route('/me').get(isAuthenticatedUser, getUserProfile)
-router.route('/jobs/applied').get(isAuthenticatedUser,authorizeRoles('user'), getAppliedJobs)
-router.route('/jobs/published').get(isAuthenticatedUser,authorizeRoles('employeer','admin'), getPublishedJobs)
+// router.use(isAuthenticatedUser);
+router.use(isAuthenticatedUser);
 
-router.route('/password/update').put(isAuthenticatedUser, updatePassword)
-router.route('/me/update').put(isAuthenticatedUser, updateUser);
-router.route('/me/delete').delete(isAuthenticatedUser, deleteUser)
+router.route('/me').get(getUserProfile)
+router.route('/jobs/applied').get(authorizeRoles('user'), getAppliedJobs)
+router.route('/jobs/published').get(authorizeRoles('employeer','admin'), getPublishedJobs)
+
+router.route('/password/update').put(updatePassword)
+router.route('/me/update').put(updateUser);
+router.route('/me/delete').delete(deleteUser)
 
 // admin only routes
-router.route('/users/').get(isAuthenticatedUser, authorizeRoles('admin'), getUsers)
+router.route('/users/').get(authorizeRoles('admin'), getUsers)
+// router.route('/user/:id').delete(authorizeRoles('admin'),deleteUserAdmin)
+router.route('/user/:id').delete(authorizeRoles('admin'),deleteUserAdmin);
 module.exports = router; 
