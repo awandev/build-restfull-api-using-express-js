@@ -4,6 +4,10 @@ const catchAsyncErrors = require('../middlewares/catchAsyncErrors')
 const ErrorHandler = require('../utils/errorHandler')
 const sendToken = require('../utils/jwtToken')
 const fs = require('fs');
+
+const APIFilters = require('../utils/apiFilters');
+
+
 // get current user profile => /api/v1/me
 exports.getUserProfile = catchAsyncErrors(async(req, res, next) => {
     const user = await User.findById(req.user.id)
@@ -95,6 +99,25 @@ exports.deleteUser = catchAsyncErrors(async(req, res, next) => {
     })
     
 })
+
+
+// show all user => /api/v1/users
+exports.getUsers = catchAsyncErrors(async(req, res, next) => {
+    const apiFilters = new APIFilters(User.find(), req.query)
+            .filter()
+            .sort()
+            .limitFields()
+            .pagination();
+
+    const users = await apiFilters.query;
+
+    res.status(200).json({
+        success : true,
+        results : users.length,
+        data : users
+    }) 
+})
+
 
 async function deleteUserData(user, role) {
     if(role === 'employeer') {

@@ -7,7 +7,8 @@ const {
     updateUser,
     deleteUser,
     getAppliedJobs,
-    getPublishedJobs
+    getPublishedJobs,
+    getUsers
 } = require('../controllers/userController')
 
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth')
@@ -19,4 +20,7 @@ router.route('/jobs/published').get(isAuthenticatedUser,authorizeRoles('employee
 router.route('/password/update').put(isAuthenticatedUser, updatePassword)
 router.route('/me/update').put(isAuthenticatedUser, updateUser);
 router.route('/me/delete').delete(isAuthenticatedUser, deleteUser)
+
+// admin only routes
+router.route('/users/').get(isAuthenticatedUser, authorizeRoles('admin'), getUsers)
 module.exports = router; 
