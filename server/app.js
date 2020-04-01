@@ -9,6 +9,7 @@ const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
 const xssClean = require('xss-clean')
 const hpp = require('hpp')
+const cors = require('cors')
 
 // connect to database 
 const connectDatabase = require('./config/database');
@@ -57,6 +58,10 @@ const limiter = rateLimit({
     windosMs : 10*60*1000, //10 minutes
     max : 2 , //it means, you only have 2 request maximum on 10 minutes
 })
+
+// setup CORS - accessible by other domains
+app.use(cors());
+
 app.use(limiter);
 
 // creating own middleware
