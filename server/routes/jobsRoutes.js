@@ -20,8 +20,8 @@ router.route('/jobs/:zipcode/:distance').get(getJobsInRadius);
 router.route('/stats/:topic').get(jobStats);
 router.route('/job/new').post(isAuthenticatedUser,authorizeRoles('employeer','admin'), newJob);
 router.route('/job/:id')
-    .put(isAuthenticatedUser,authorizeRoles('employeer','admin'),updateJob)
-    .delete(isAuthenticatedUser,authorizeRoles('employeer','admin'),deleteJob);
+    .put(isAuthenticatedUser, authorizeRoles('employeer', 'admin'), updateJob)
+    .delete(isAuthenticatedUser, authorizeRoles('employeer', 'admin'), deleteJob);
 router.route('/job/:id/apply').put(isAuthenticatedUser, authorizeRoles('user'), applyJob)
 
 module.exports = router;
